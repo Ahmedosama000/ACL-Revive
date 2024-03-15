@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title',128);
             $table->smallInteger('duration');
-            $table->timestamp('');
             $table->string('notes',128);
             $table->string('platform',32);
             $table->decimal('price',6, 2); //1000.00
