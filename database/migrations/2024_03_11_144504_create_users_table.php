@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone',14);
+            $table->string('code',4)->nullable();
+            $table->timestamp('code_expired_at')->nullable();
             $table->tinyInteger('status')->default(0)->comment('0-> not active / 1-> active / 2-> blocked');
             $table->unsignedBigInteger('type_id');
             $table->foreign('type_id')->references('id')->on('types')->onUpdate('cascade')->onDelete('cascade');

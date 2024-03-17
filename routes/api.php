@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\mobile\auth\LoginController;
 use App\Http\Controllers\api\mobile\auth\RegisterController;
+use App\Http\Controllers\api\mobile\auth\ResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +24,13 @@ use App\Http\Controllers\api\mobile\auth\RegisterController;
 Route::group(['prefix'=>'mobile'],function(){
     Route::get('register',[RegisterController::class,'ShowType']);
     Route::post('register',[RegisterController::class,'Register']);;
+    Route::post('login',[LoginController::class,'Login']);
+    Route::delete('logout',[LoginController::class,'Logout']);
+    Route::delete('logout-all-devices',[LoginController::class,'AllLogout']);
+    Route::get('check/{email}',[ResetController::class,'CheckMail']);
+    Route::post('send-code',[ResetController::class,'SendCode']);
+    Route::post('check-code',[ResetController::class,'CheckCode']);
+    Route::post('reset-password',[ResetController::class,'ResetPassword']);
 
+    
 });
