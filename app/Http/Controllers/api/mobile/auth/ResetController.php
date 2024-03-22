@@ -96,5 +96,4 @@ class ResetController extends Controller
 
         return $this->SuccessMessage("Password has been changed successfully",200);
     }
-
 }
