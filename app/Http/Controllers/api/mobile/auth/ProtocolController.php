@@ -8,6 +8,7 @@ use App\Models\Protocol;
 use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DelProtocolRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProtocolRequest;
 use App\Models\UserProtocol;
@@ -51,6 +52,49 @@ class ProtocolController extends Controller
         else {
             return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
         }
+        
+    }
+
+    public function GetUserProtocols(Request $request){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            $name = User::find($authenticated->id)->name;
+            // $data = UserProtocol::with(['protocol:protocols.id,name','user:users.id,name'])->where('user_id',$authenticated->id)->get();
+            $data = UserProtocol::with('protocol:protocols.id,name')->where('user_id',$authenticated->id)->get();
+            return $this->Data(compact('data'),"",200);
+        }
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+    }
+
+    public function RemoveUserProtocol(DelProtocolRequest $request){
+
+        $token = $request->header('Authorization');
+        $id = $request->id;
+        $authenticated = Auth::guard('sanctum')->user();
+        if ($authenticated){
+
+            $data = UserProtocol::where('id',$id)->first();
+            if ($data){
+
+                UserProtocol::where('id',$id)->delete();
+                return $this->SuccessMessage("Protocol Deleted",200);
+            }
+
+            return $this->ErrorMessage(['id'=>'id invalid'],"Please check id",404);
+
+        }
+        else {
+            return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+        }
+    }
+
+    public function UpdateUserProtocol(){
+        
+        //
         
     }
 }

@@ -32,7 +32,12 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('send-code',[ResetController::class,'SendCode']);
     Route::post('check-code',[ResetController::class,'CheckCode']);
     Route::post('reset-password',[ResetController::class,'ResetPassword']);
+});
+
+Route::group(['prefix'=>'mobile'],function(){
     Route::get('protocols',[ProtocolController::class,'GetProtocols']);
     Route::post('set-protocol',[ProtocolController::class,'SetUserProtocol']);
-    
-});
+    Route::get('user-protocol',[ProtocolController::class,'GetUserProtocols']);
+    Route::post('remove-user-protocol',[ProtocolController::class,'RemoveUserProtocol']);
+
+});  

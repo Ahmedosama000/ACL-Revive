@@ -14,5 +14,20 @@ class UserProtocol extends Model
         'protocol_id',
     ];
 
+    protected $hidden = [
+        'user_id',
+        'protocol_id',
+    ];
+
     protected $table = 'protocol_users';
+
+    public function user(){
+
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function protocol(){
+
+        return $this->belongsTo(Protocol::class,'protocol_id');
+    }
 }
