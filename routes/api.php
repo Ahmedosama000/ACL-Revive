@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\mobile\auth\AchievementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\mobile\auth\LoginController;
@@ -38,6 +39,9 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::get('protocols',[ProtocolController::class,'GetProtocols']);
     Route::post('set-protocol',[ProtocolController::class,'SetUserProtocol']);
     Route::get('user-protocol',[ProtocolController::class,'GetUserProtocols']);
+    Route::post('update-user-protocol',[ProtocolController::class,'UpdateUserProtocol']);
     Route::post('remove-user-protocol',[ProtocolController::class,'RemoveUserProtocol']);
+    Route::post('move-to-achievements',[ProtocolController::class,'MoveToAchieve']);
+    Route::get('user-achievements', AchievementController::class);
 
 });  

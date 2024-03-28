@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DelProtocolRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProtocolRequest;
+use App\Http\Requests\UpdateProtocolRequest;
+use App\Models\Achievement;
 use App\Models\UserProtocol;
 
 class ProtocolController extends Controller
@@ -92,9 +94,56 @@ class ProtocolController extends Controller
         }
     }
 
-    public function UpdateUserProtocol(){
+    public function UpdateUserProtocol(UpdateProtocolRequest $request){
         
-        //
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+        $id = $request->id;
+        $new_protocol = $request->protocol_id;
+
+        if ($authenticated){
+
+            $user = UserProtocol::where('id',$id)->first();
+            $user->protocol_id = $new_protocol;
+
+            $user->save();
+
+            return $this->SuccessMessage("Protocol Updated",200);
+        }
+
+        else {
+            return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+        }
         
+    }
+
+    public function MoveToAchieve(DelProtocolRequest $request){
+
+        $token = $request->header('Authorization');
+        $id = $request->id;
+        $authenticated = Auth::guard('sanctum')->user();
+        if ($authenticated){
+
+            $data = UserProtocol::where('id',$id)->first();
+            if ($data){
+
+                $achieves = [];
+
+                $achieves['user_id'] = $data->user_id;
+                $achieves['protocol_id'] = $data->protocol_id;
+
+                $achieve = Achievement::create($achieves);
+                UserProtocol::where('id',$id)->delete();
+                $achieve->token = $token;
+
+                return $this->Data(compact('achieve'),"Protocol Moved to Achievements.",200);
+            }
+
+            return $this->ErrorMessage(['id'=>'id invalid'],"Please check id",404);
+
+        }
+        else {
+            return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+        }
     }
 }
