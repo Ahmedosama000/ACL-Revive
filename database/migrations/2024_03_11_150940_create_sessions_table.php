@@ -18,9 +18,11 @@ return new class extends Migration
             $table->string('notes',128);
             $table->string('platform',32);
             $table->decimal('price',6, 2); //1000.00
-            $table->date('started_at');
+            $table->dateTime('started_at');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('patient_id')->nullable();
+            $table->foreign('patient_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

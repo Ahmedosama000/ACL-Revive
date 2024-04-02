@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\api\mobile\auth;
 
+use App\Models\Type;
 use App\Models\User;
+use App\Models\Protocol;
 use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
+use App\Models\Identification;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-use App\Models\Protocol;
-use App\Models\Type;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,10 +36,11 @@ class LoginController extends Controller
                 if ($type_id == 1){
                     return $this->Data(compact('user'),"You need to select your protocol",401);
                 }
-                else {
-                    $protocol = Protocol::where('id',$protocol_id)->first()->name;
-                    $user['protocol'] = $protocol;
-                    return $this->Data(compact('user'),"You need to complete your data",401);
+                else if ($type_id == 2) {
+                    $check = Identification::where('user_id',$user->id)->first();
+                    if (!$check){
+                        return $this->Data(compact('user'),"You need to complete your data",401);
+                    }
                 }
             }
             return $this->Data(compact('user'),"",200);

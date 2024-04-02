@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\api\mobile\auth\AchievementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\mobile\SessionController;
 use App\Http\Controllers\api\mobile\auth\LoginController;
+use App\Http\Controllers\api\mobile\auth\ResetController;
 use App\Http\Controllers\api\mobile\auth\ProtocolController;
 use App\Http\Controllers\api\mobile\auth\RegisterController;
-use App\Http\Controllers\api\mobile\auth\ResetController;
+use App\Http\Controllers\api\mobile\auth\IdentifiesController;
+use App\Http\Controllers\api\mobile\auth\AchievementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,5 +45,17 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('remove-user-protocol',[ProtocolController::class,'RemoveUserProtocol']);
     Route::post('move-to-achievements',[ProtocolController::class,'MoveToAchieve']);
     Route::get('user-achievements', AchievementController::class);
+    Route::post('reserve-session/{id}',[SessionController::class,'Reserve']);
+    Route::get('reserved-sessions',[SessionController::class,'ShowMyReservedSessions']);
+    Route::get('session/{id}',[SessionController::class,'GetSessionInfo']);
 
 });  
+
+Route::group(['prefix'=>'mobile'],function(){
+    Route::post('identifies',[IdentifiesController::class,'UploadIDS']);
+    Route::post('create-session',[SessionController::class,'Create']);
+    Route::get('my-sessions',[SessionController::class,'ShowRelatedSessions']);
+    Route::get('my-reserved-sessions',[SessionController::class,'ShowRelatedReservedSessions']);
+    Route::post('update-session/{id}',[SessionController::class,'UpdateSession']);
+    Route::post('delete-session/{id}',[SessionController::class,'RemoveSession']);
+});
