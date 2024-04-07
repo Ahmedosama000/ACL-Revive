@@ -25,6 +25,8 @@ use App\Http\Controllers\api\mobile\auth\AchievementController;
 //     return $request->user();
 // });
 
+// auth
+
 Route::group(['prefix'=>'mobile'],function(){
     Route::get('register',[RegisterController::class,'ShowType']);
     Route::post('register',[RegisterController::class,'Register']);;
@@ -37,6 +39,8 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('reset-password',[ResetController::class,'ResetPassword']);
 });
 
+// patients
+
 Route::group(['prefix'=>'mobile'],function(){
     Route::get('protocols',[ProtocolController::class,'GetProtocols']);
     Route::post('set-protocol',[ProtocolController::class,'SetUserProtocol']);
@@ -48,8 +52,11 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('reserve-session/{id}',[SessionController::class,'Reserve']);
     Route::get('reserved-sessions',[SessionController::class,'ShowMyReservedSessions']);
     Route::get('session/{id}',[SessionController::class,'GetSessionInfo']);
+    Route::post('set-photo',[RegisterController::class,'SetUserPhoto']);
 
 });  
+
+// doctors 
 
 Route::group(['prefix'=>'mobile'],function(){
     Route::post('identifies',[IdentifiesController::class,'UploadIDS']);

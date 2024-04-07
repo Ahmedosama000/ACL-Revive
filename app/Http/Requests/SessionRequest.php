@@ -28,6 +28,7 @@ class SessionRequest extends FormRequest
             "platform" => ["required",'string','max:30'],
             "price" => ["required",'numeric'],
             "started_at" => ["required",'date_format:Y-m-d H:i:s'],
+            // "started_at" => ["required",'date_format:Y-m-d H:i:s'],
         ];
     }
 }

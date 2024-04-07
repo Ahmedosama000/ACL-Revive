@@ -42,7 +42,7 @@ class SessionController extends Controller
 
         if ($authenticated){
 
-            $data = Session::with('user:users.id,name')->where('user_id',$authenticated->id)->whereNull('patient_id')->get();
+            $data = Session::with('user:users.id,name,photo')->where('user_id',$authenticated->id)->whereNull('patient_id')->get();
             return $this->Data(compact('data'),"",200);
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
@@ -56,7 +56,7 @@ class SessionController extends Controller
 
         if ($authenticated){
 
-            $data = Session::with('user:users.id,name','patient:users.id,name')->where('user_id',$authenticated->id)->whereNotNull('patient_id')->get();
+            $data = Session::with('user:users.id,name,photo','patient:users.id,name')->where('user_id',$authenticated->id)->whereNotNull('patient_id')->get();
             return $this->Data(compact('data'),"",200);
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
@@ -150,7 +150,7 @@ class SessionController extends Controller
 
             if ($session){
 
-                $data = Session::with('user:users.id,name')->where('id',$id)->whereNotNull('patient_id')->get();
+                $data = Session::with('user:users.id,name,photo')->where('id',$id)->get();
                 return $this->Data(compact('data'),"",200);
             }
             return $this->ErrorMessage(['Session'=> 'Session ID Not Found'],"Session ID Not Found ",404);
@@ -167,7 +167,7 @@ class SessionController extends Controller
 
         if ($authenticated){
 
-            $data = Session::with('user:users.id,name','patient:users.id,name')->where('patient_id',$authenticated->id)->get();
+            $data = Session::with('user:users.id,name,photo','patient:users.id,name')->where('patient_id',$authenticated->id)->get();
             return $this->Data(compact('data'),"",200);
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);

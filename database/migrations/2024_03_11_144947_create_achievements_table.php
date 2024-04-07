@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('protocol_id');
             $table->foreign('protocol_id')->references('id')->on('protocols')->onUpdate('cascade')->onDelete('cascade');
+            $table->dateTime('injury_date');
+            $table->dateTime('surgury_date');
             $table->timestamps();
         });
     }

@@ -131,6 +131,8 @@ class ProtocolController extends Controller
 
                 $achieves['user_id'] = $data->user_id;
                 $achieves['protocol_id'] = $data->protocol_id;
+                $achieves['injury_date'] = $data->injury_date;
+                $achieves['surgery_date'] = $data->injury_date;
 
                 $achieve = Achievement::create($achieves);
                 UserProtocol::where('id',$id)->delete();

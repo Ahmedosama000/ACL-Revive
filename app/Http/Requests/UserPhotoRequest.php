@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProtocolRequest extends FormRequest
+class UserPhotoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class ProtocolRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'protocol_id' => ['required','integer','exists:protocols,id'],
-            'injury_date' => ["required",'date_format:Y-m-d H:i:s'],
-            'sergery_date' => ["required",'date_format:Y-m-d H:i:s'],
+            'photo' => ['required','max:5000','mimes:png,jpg'],
         ];
     }
 }

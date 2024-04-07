@@ -6,15 +6,21 @@ use Illuminate\Support\Facades\Storage;
 
 trait media {
 
-    public function uploadFile($image , $folder , $id)
+    public function uploadFile($image , $folder , $id )
     {
 
-        $photoName = time() . "-$id." . $image->extension();
-        $path = $image->storeAs($folder,$photoName,'local');
+        $fileName = time() . "-$id." . $image->extension();
+        $path = $image->storeAs($folder,$fileName,'local');
 
-        return $photoName;
+        return $fileName;
     }
 
+    public function uploadPhoto($image , $folder , $id)
+    {
+        $photoName = time() . "-$id." . $image->extension();
+        $image->move(public_path($folder),$photoName);
+        return $photoName;
+    }
 
 
     public function deletePhoto($photoPath , $photoname)

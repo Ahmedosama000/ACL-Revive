@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\api\mobile\auth;
 
 use App\Models\Type;
+use App\Models\User;
+use App\Http\traits\media;
 use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
+use App\Http\Requests\UserPhotoRequest;
 
 class RegisterController extends Controller
 {
     use ApiTrait;
+    use media;
 
     public function ShowType(){
 
@@ -36,5 +40,29 @@ class RegisterController extends Controller
         else {
             return $this->ErrorMessage([],"This Type Not Found",404);
         }
+    }
+
+    public function SetUserPhoto(UserPhotoRequest $request){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated)
+        {
+            $user = User::find($authenticated->id);
+
+            $photo = $request->file('photo');
+
+            $photo_name = $this->uploadPhoto($photo,'profiles',$user->id);
+                        
+            $user->photo = asset("profiles/$photo_name");
+
+            $user->save();
+            
+            return $this->SuccessMessage("User Photo Set Successfully",200);
+        }
+
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+
     }
 }
