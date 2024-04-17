@@ -29,6 +29,8 @@ class ProtocolController extends Controller
 
         $token = $request->header('Authorization');
         $protocol_id = $request->protocol_id;
+        $injury_date = $request->injury_date;
+        $surgery_date = $request->surgery_date;
 
         $authenticated = Auth::guard('sanctum')->user();
 
@@ -39,7 +41,10 @@ class ProtocolController extends Controller
             $data = [
                 'user_id'=> $authenticated->id,
                 'protocol_id' => $protocol_id,
+                'injury_date' => $injury_date ,
+                'surgery_date' => $surgery_date,
             ];
+
 
             $SetProtocol = UserProtocol::create($data);
 
@@ -132,7 +137,7 @@ class ProtocolController extends Controller
                 $achieves['user_id'] = $data->user_id;
                 $achieves['protocol_id'] = $data->protocol_id;
                 $achieves['injury_date'] = $data->injury_date;
-                $achieves['surgery_date'] = $data->injury_date;
+                $achieves['surgery_date'] = $data->surgery_date;
 
                 $achieve = Achievement::create($achieves);
                 UserProtocol::where('id',$id)->delete();

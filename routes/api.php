@@ -9,6 +9,7 @@ use App\Http\Controllers\api\mobile\auth\ProtocolController;
 use App\Http\Controllers\api\mobile\auth\RegisterController;
 use App\Http\Controllers\api\mobile\auth\IdentifiesController;
 use App\Http\Controllers\api\mobile\auth\AchievementController;
+use App\Http\Controllers\api\mobile\ExerciseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +53,10 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('reserve-session/{id}',[SessionController::class,'Reserve']);
     Route::get('reserved-sessions',[SessionController::class,'ShowMyReservedSessions']);
     Route::get('session/{id}',[SessionController::class,'GetSessionInfo']);
+    Route::get('all-sessions',[SessionController::class,'GetAllSessions']);
     Route::post('set-photo',[RegisterController::class,'SetUserPhoto']);
+    Route::get('exercises',[ExerciseController::class,'GetAllExercise']);
+    Route::get('exercise/{type}',[ExerciseController::class,'GetExercise']);
 
 });  
 

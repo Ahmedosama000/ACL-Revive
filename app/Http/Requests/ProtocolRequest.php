@@ -24,7 +24,7 @@ class ProtocolRequest extends FormRequest
         return [
             'protocol_id' => ['required','integer','exists:protocols,id'],
             'injury_date' => ["required",'date_format:Y-m-d H:i:s'],
-            'sergery_date' => ["required",'date_format:Y-m-d H:i:s'],
+            'surgery_date' => ["required",'date_format:Y-m-d H:i:s'],
         ];
     }
 }

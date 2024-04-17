@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('achievements', function (Blueprint $table) {
+        Schema::create('exercises', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('link',128);
+            $table->string('description',128);
+            $table->enum('status',[0,1,2,3])->default(0)->comment("0=>No , 1=>Primary , 2=>Optional , 3=>Alternate ");
             $table->unsignedBigInteger('protocol_id');
             $table->foreign('protocol_id')->references('id')->on('protocols')->onUpdate('cascade')->onDelete('cascade');
-            $table->dateTime('injury_date');
-            $table->dateTime('surgery_date');
-            $table->timestamps();
+           
         });
     }
+    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('achievements');
+        Schema::dropIfExists('exercises');
     }
 };

@@ -75,9 +75,11 @@ class SessionController extends Controller
             $session = Session::find($id);
 
             if ($session){
-
-                Session::find($id)->update($data);
-                return $this->SuccessMessage("Session Updated",200);
+                if ($authenticated->id == $session->user_id){
+                    Session::find($id)->update($data);
+                    return $this->SuccessMessage("Session Updated",200);
+                }
+                return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
             }
 
             else {
@@ -98,8 +100,14 @@ class SessionController extends Controller
 
             if ($session){
 
-                Session::find($id)->delete();
-                return $this->SuccessMessage("Session Deleted",200);
+                if ($authenticated->id == $session->user_id){
+                    Session::find($id)->delete();
+                    return $this->SuccessMessage("Session Deleted",200);
+                }
+
+                else {
+                    return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+                }
             }
             else {
                 return $this->ErrorMessage(['Session'=> 'Session ID Not Found'],"Session ID Not Found ",404);
@@ -172,6 +180,17 @@ class SessionController extends Controller
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
 
+    }
 
+    public function GetAllSessions(Request $request){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+            $data = Session::with('user:users.id,name,photo')->whereNull('patient_id')->get();
+            return $this->Data(compact('data'),"",200);
+        }
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
     }
 }

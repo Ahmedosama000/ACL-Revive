@@ -12,6 +12,8 @@ class UserProtocol extends Model
     protected $fillable = [
         'user_id',
         'protocol_id',
+        'injury_date',
+        'surgery_date',
     ];
 
     protected $hidden = [

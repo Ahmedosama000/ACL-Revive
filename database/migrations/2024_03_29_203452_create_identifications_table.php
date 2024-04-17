@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('national','128')->nullable();
-            $table->string('union','128')->nullable();
+            $table->string('national',128)->nullable();
+            $table->string('union',128)->nullable();
             $table->timestamps();
         });
     }
