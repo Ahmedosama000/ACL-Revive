@@ -46,6 +46,7 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::get('protocols',[ProtocolController::class,'GetProtocols']);
     Route::post('set-protocol',[ProtocolController::class,'SetUserProtocol']);
     Route::get('user-protocol',[ProtocolController::class,'GetUserProtocols']);
+    Route::get('user-protocol-info/{id}',[ProtocolController::class,'ShowUserProtocolInfo']);
     Route::post('update-user-protocol',[ProtocolController::class,'UpdateUserProtocol']);
     Route::post('remove-user-protocol',[ProtocolController::class,'RemoveUserProtocol']);
     Route::post('move-to-achievements',[ProtocolController::class,'MoveToAchieve']);
@@ -57,8 +58,12 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('set-photo',[RegisterController::class,'SetUserPhoto']);
     Route::get('exercises',[ExerciseController::class,'GetAllExercise']);
     Route::get('exercise/{type}',[ExerciseController::class,'GetExercise']);
+    Route::get('get-exercise/{id}',[ExerciseController::class,'GetExerciseByID']);
+    Route::get('show-exercise/{protocol}/{type}/{phase}',[ExerciseController::class,'GetExerciseByPhase']);
+    Route::post('create-exercise',[ExerciseController::class,'CreateExercise']);
 
-});  
+
+});
 
 // doctors 
 

@@ -19,17 +19,29 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request){
 
-        $user = User::where('email',$request->email)->first();
+        if ($request->email){
+            $user = User::where('email',$request->email)->first();
+            $type_id = User::where('email',$request->email)->first()->type_id;
+            $protocol_id = User::where('email',$request->email)->first()->protocol_id;
+
+        }
+
+        else if ($request->username){
+            $user = User::where('username',$request->username)->first();
+            $type_id = User::where('username',$request->username)->first()->type_id;
+            $protocol_id = User::where('username',$request->username)->first()->protocol_id;
+
+        }
+
+        
         if (! Hash::check($request->password,$user->password)){
             return $this->ErrorMessage(["email"=>"The email or password not correct"],"",401);
         }
         else {
-            $type_id = User::where('email',$request->email)->first()->type_id;
             $type  = Type::where('id',$type_id)->first()->name;
-            $protocol_id = User::where('email',$request->email)->first()->protocol_id;
             $user['protocol'] = $protocol_id;
             $user['type'] = $type;
-            $user->token = "Bearer ".$user->createToken($request->email)->plainTextToken;
+            $user->token = "Bearer ".$user->createToken($request->password)->plainTextToken;
 
             if (!$protocol_id){
                 

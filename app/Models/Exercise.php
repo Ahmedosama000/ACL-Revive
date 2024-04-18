@@ -13,4 +13,23 @@ class Exercise extends Model
 
         return $this->belongsTo(Protocol::class,'protocol_id');
     }
+
+    protected $fillable = [
+        'name',
+        'link',
+        'img',
+        'instruction',
+        'type',
+        //'phase',
+        'protocol_id'
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s', 
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'instruction' => 'array',
+    ];
+
+    public $timestamps = false;
+
 }

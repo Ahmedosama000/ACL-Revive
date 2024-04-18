@@ -77,6 +77,29 @@ class ProtocolController extends Controller
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
     }
 
+    public function ShowUserProtocolInfo(Request $request , $id){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            $protocols = UserProtocol::find($id);
+
+            if ($protocols){
+
+                $data = UserProtocol::with('protocol:protocols.id,name')->find($id);
+                return $this->Data(compact('data'),"",200);
+
+            }
+
+            return $this->ErrorMessage(['ID'=>'ID not found'],"Please check ID",404);
+
+        }
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+
+    }
+
     public function RemoveUserProtocol(DelProtocolRequest $request){
 
         $token = $request->header('Authorization');
@@ -109,11 +132,14 @@ class ProtocolController extends Controller
         if ($authenticated){
 
             $user = UserProtocol::where('id',$id)->first();
-            $user->protocol_id = $new_protocol;
 
-            $user->save();
-
-            return $this->SuccessMessage("Protocol Updated",200);
+            if ($user->protocol_id != $new_protocol){
+                
+                $user->protocol_id = $new_protocol;
+                $user->save();
+                return $this->SuccessMessage("Protocol Updated",200);
+            }
+            return $this->ErrorMessage($data=[],"Already Updated",400);
         }
 
         else {
@@ -121,6 +147,7 @@ class ProtocolController extends Controller
         }
         
     }
+
 
     public function MoveToAchieve(DelProtocolRequest $request){
 
@@ -138,6 +165,8 @@ class ProtocolController extends Controller
                 $achieves['protocol_id'] = $data->protocol_id;
                 $achieves['injury_date'] = $data->injury_date;
                 $achieves['surgery_date'] = $data->surgery_date;
+                $achieves['started_at'] = $data->created_at;
+
 
                 $achieve = Achievement::create($achieves);
                 UserProtocol::where('id',$id)->delete();

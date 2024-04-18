@@ -14,11 +14,13 @@ class Achievement extends Model
         'protocol_id',
         'injury_date',
         'surgery_date',
+        'started_at',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s', 
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'started_at' => 'datetime:Y-m-d ', 
+        'created_at' => 'datetime:Y-m-d ', 
+        'updated_at' => 'datetime:Y-m-d ',
     ];
 
 

@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
+            $table->string('name',32);
             $table->string('link',128);
-            $table->string('description',128);
-            $table->enum('status',[0,1,2,3])->default(0)->comment("0=>No , 1=>Primary , 2=>Optional , 3=>Alternate ");
+            $table->string('img',128);
+            $table->json('instructions');
+            $table->enum('phase',[1,2,3])->nullable();
+            $table->enum('type',['Primary','Optional','Alternate'])->default('Primary');
             $table->unsignedBigInteger('protocol_id');
             $table->foreign('protocol_id')->references('id')->on('protocols')->onUpdate('cascade')->onDelete('cascade');
            

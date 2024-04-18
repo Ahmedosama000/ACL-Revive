@@ -32,4 +32,12 @@ class UserProtocol extends Model
 
         return $this->belongsTo(Protocol::class,'protocol_id');
     }
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d ', 
+        'updated_at' => 'datetime:Y-m-d ',
+        'injury_date' => 'datetime:Y-m-d ',
+        'surgery_date' => 'datetime:Y-m-d ',
+    ];
+
 }
