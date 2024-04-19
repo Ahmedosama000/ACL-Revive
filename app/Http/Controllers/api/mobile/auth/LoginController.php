@@ -10,6 +10,7 @@ use App\Http\traits\ApiTrait;
 use App\Models\Identification;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use App\Models\UserProtocol;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,37 +21,40 @@ class LoginController extends Controller
     public function login(LoginRequest $request){
 
         if ($request->email){
-            $user = User::where('email',$request->email)->first();
-            $type_id = User::where('email',$request->email)->first()->type_id;
-            $protocol_id = User::where('email',$request->email)->first()->protocol_id;
 
+            $user = User::with('type:types.id,name')->where('email',$request->email)->get();
+            $type_id = User::where('email',$request->email)->first()->type_id;
         }
 
         else if ($request->username){
-            $user = User::where('username',$request->username)->first();
-            $type_id = User::where('username',$request->username)->first()->type_id;
-            $protocol_id = User::where('username',$request->username)->first()->protocol_id;
-
+            $user = User::with('type:types.id,name')->where('username',$request->username)->get();
+            $type_id = User::where('email',$request->email)->first()->type_id;
         }
 
         
-        if (! Hash::check($request->password,$user->password)){
+        if (! Hash::check($request->password,$user[0]->password)){
             return $this->ErrorMessage(["email"=>"The email or password not correct"],"",401);
         }
-        else {
-            $type  = Type::where('id',$type_id)->first()->name;
-            $user['protocol'] = $protocol_id;
-            $user['type'] = $type;
-            $user->token = "Bearer ".$user->createToken($request->password)->plainTextToken;
 
-            if (!$protocol_id){
+        else {
+
+            $user['token'] = "Bearer ".$user[0]->createToken($request->password)->plainTextToken;
+
+            $protocol = UserProtocol::find($user[0]->id);
+
+            if (!$protocol){
                 
                 if ($type_id == 1){
+
                     return $this->Data(compact('user'),"You need to select your protocol",401);
                 }
+
                 else if ($type_id == 2) {
-                    $check = Identification::where('user_id',$user->id)->first();
+
+                    $check = Identification::where('user_id',$user[0]->id)->first();
+                    
                     if (!$check){
+
                         return $this->Data(compact('user'),"You need to complete your data",401);
                     }
                 }

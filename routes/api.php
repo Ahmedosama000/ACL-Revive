@@ -10,6 +10,7 @@ use App\Http\Controllers\api\mobile\auth\RegisterController;
 use App\Http\Controllers\api\mobile\auth\IdentifiesController;
 use App\Http\Controllers\api\mobile\auth\AchievementController;
 use App\Http\Controllers\api\mobile\ExerciseController;
+use App\Http\Controllers\api\mobile\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,7 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('update-user-protocol',[ProtocolController::class,'UpdateUserProtocol']);
     Route::post('remove-user-protocol',[ProtocolController::class,'RemoveUserProtocol']);
     Route::post('move-to-achievements',[ProtocolController::class,'MoveToAchieve']);
+    Route::post('remove-achievement',[ProtocolController::class,'RemoveAchievement']);
     Route::get('user-achievements', AchievementController::class);
     Route::post('reserve-session/{id}',[SessionController::class,'Reserve']);
     Route::get('reserved-sessions',[SessionController::class,'ShowMyReservedSessions']);
@@ -59,9 +61,11 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::get('exercises',[ExerciseController::class,'GetAllExercise']);
     Route::get('exercise/{type}',[ExerciseController::class,'GetExercise']);
     Route::get('get-exercise/{id}',[ExerciseController::class,'GetExerciseByID']);
-    Route::get('show-exercise/{protocol}/{type}/{phase}',[ExerciseController::class,'GetExerciseByPhase']);
+    Route::get('show-exercise/{protocol}/{phase}/{type}',[ExerciseController::class,'GetExerciseByPhase']);
     Route::post('create-exercise',[ExerciseController::class,'CreateExercise']);
-
+    Route::post('remove-exercise',[ExerciseController::class,'RemoveExercise']);
+    Route::post('subscription',[SubscriptionController::class,'CreateSubscription']);
+    Route::get('subscription-info',[SubscriptionController::class,'GetSubscriptionDetails']);
 
 });
 

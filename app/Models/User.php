@@ -41,8 +41,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'type_id',
-        'protocol_id',
     ];
 
     /**
@@ -56,4 +54,9 @@ class User extends Authenticatable
         'created_at' => 'datetime:Y-m-d H:i:s', 
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function type(){
+
+        return $this->belongsTo(Type::class,'type_id');
+    }
 }

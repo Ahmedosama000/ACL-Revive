@@ -182,4 +182,23 @@ class ProtocolController extends Controller
             return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
         }
     }
+
+    public function RemoveAchievement(Request $request){
+
+        $request->validate([
+            'id' => ['required','exists:achievements,id'],
+        ]);
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            Achievement::find($request->id)->delete();
+            return $this->SuccessMessage("Achievment deleted",200);
+        }
+
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+
+    }
 }

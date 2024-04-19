@@ -71,7 +71,7 @@ class ExerciseController extends Controller
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
     }
 
-    public function GetExerciseByPhase(Request $request , $protocol , $type , $phase){
+    public function GetExerciseByPhase(Request $request , $protocol , $phase , $type){
 
         $token = $request->header('Authorization');
         $authenticated = Auth::guard('sanctum')->user();
@@ -132,7 +132,24 @@ class ExerciseController extends Controller
 
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
-
     }
 
+    public function RemoveExercise(Request $request){
+
+        $request->validate([
+            'id' => ['required','exists:exercises,id'],
+        ]);
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            Exercise::find($request->id)->delete();
+            return $this->SuccessMessage("Exercise deleted",200);
+        }
+
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+
+    }
 }
