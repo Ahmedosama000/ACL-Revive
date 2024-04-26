@@ -76,9 +76,13 @@ class ExerciseController extends Controller
         $token = $request->header('Authorization');
         $authenticated = Auth::guard('sanctum')->user();
         
+        if ($phase == 0){
+            $phase = null;
+        }
+
         if ($authenticated){
 
-            if ($phase == 0 || $phase == 1 || $phase == 2 || $phase == 3 ){
+            if ($phase == null || $phase == 1 || $phase == 2 || $phase == 3 ){
 
                 if ($protocol == 'pre'){
 
@@ -114,6 +118,7 @@ class ExerciseController extends Controller
 
             if ($request->phase == 0 ){
 
+                $data['phase'] = null;
                 $data['protocol_id'] = 1 ;
                 $exercise = Exercise::create($data);
                 return $this->Data(compact('exercise'),"Exercise Created Successfully",201);
@@ -122,7 +127,7 @@ class ExerciseController extends Controller
 
             else if ($request->protocol_id == 1 ){
 
-                $data['phase'] = 0 ;
+                $data['phase'] = null ;
                 $exercise = Exercise::create($data);
                 return $this->Data(compact('exercise'),"Exercise Created Successfully",201);
             }

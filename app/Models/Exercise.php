@@ -18,16 +18,16 @@ class Exercise extends Model
         'name',
         'link',
         'img',
-        'instruction',
+        'instructions',
         'type',
-        //'phase',
+        'phase',
         'protocol_id'
     ];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s', 
         'updated_at' => 'datetime:Y-m-d H:i:s',
-        'instruction' => 'array',
+        'instructions' => 'array',
     ];
 
     public $timestamps = false;

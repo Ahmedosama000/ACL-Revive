@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
-            $table->string('name',32);
+            $table->string('name',128);
             $table->string('link',128);
             $table->string('img',128);
             $table->json('instructions');

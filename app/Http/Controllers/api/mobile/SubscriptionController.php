@@ -20,26 +20,53 @@ class SubscriptionController extends Controller
 
         if ($authenticated){
 
-            $user_id = $authenticated->id;
+            try {
+                $subscribe = Subscription::where('user_id',$authenticated->id)->get()[0];
 
-            $date= date_create(date("Y-m-d"));
-            date_add($date,date_interval_create_from_date_string("$request->duration weeks"));
-            $end_at = date_format($date,"Y-m-d");
+                if ($subscribe->end_at > date('Y-m-d')){
 
-            $data = [
+                    return $this->ErrorMessage(['Error'=>'Error'],"You Already Subscribed",401);
 
-                "user_id" => $user_id,
+                }
+
+                else if ($subscribe->end_at < date('Y-m-d')){
+
+                    $date= date_create(date("Y-m-d"));
+                    date_add($date,date_interval_create_from_date_string("$request->duration weeks"));
+                    $end_at = date_format($date,"Y-m-d");
+                    
+                    $data = [
+                        
+                        "user_id" => $authenticated->id,
+                        "price" => $request->price,
+                        "duration" => $request->duration,
+                        "end_at" => $end_at,
+                    ];
+                    $subscription = Subscription::create($data);
+                    return $this->Data(compact('subscription'),"User Subscribed Successfully ",200);
+                }                    
+            }
+
+            catch (\Throwable $th) {
+
+                $date= date_create(date("Y-m-d"));
+                date_add($date,date_interval_create_from_date_string("$request->duration weeks"));
+                $end_at = date_format($date,"Y-m-d");
+
+                $data = [
+
+                "user_id" => $authenticated->id,
                 "price" => $request->price,
                 "duration" => $request->duration,
                 "end_at" => $end_at,
             ];
-
+            
             $subscription = Subscription::create($data);
-
             return $this->Data(compact('subscription'),"User Subscribed Successfully ",200);
         }
-        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
-    }
+    }    
+    return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+}
 
     public function GetSubscriptionDetails(Request $request){
 

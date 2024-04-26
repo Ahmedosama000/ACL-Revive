@@ -65,7 +65,7 @@ class ResetController extends Controller
 
         $now =  date('Y-m-d H:i:s');
 
-        if ($code == $request->code && $code_expired_at < $now){
+        if ($code == $request->code && $code_expired_at > $now){
             $num = rand(1000,9999);
             $token = Hash::make("$code.$email.$num");
             $data['token'] = $token;
@@ -73,13 +73,15 @@ class ResetController extends Controller
             $user_token = PasswordReset::where('email',$email)->first();
             if ($user_token){
                 $data['token'] = $user_token->token;
-                return $this->Data(compact('data'),"Code is Successfully",200);
+                return $this->Data(compact('data'),"Code is Successfully , this token for reset password",200);
             }
             else {
                 $input = PasswordReset::create($data);
-                return $this->Data(compact('data'),"Code is Successfully",200);
+                return $this->Data(compact('data'),"Code is Successfully , this token for reset password",200);
             }
         }
+
+        return $this->ErrorMessage(["Error" => 'Try again'],"Somethind Error",404);
 
     }
 

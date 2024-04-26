@@ -10,6 +10,7 @@ use App\Http\Controllers\api\mobile\auth\RegisterController;
 use App\Http\Controllers\api\mobile\auth\IdentifiesController;
 use App\Http\Controllers\api\mobile\auth\AchievementController;
 use App\Http\Controllers\api\mobile\ExerciseController;
+use App\Http\Controllers\api\mobile\ProfileController;
 use App\Http\Controllers\api\mobile\SubscriptionController;
 
 /*
@@ -78,4 +79,22 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::get('my-reserved-sessions',[SessionController::class,'ShowRelatedReservedSessions']);
     Route::post('update-session/{id}',[SessionController::class,'UpdateSession']);
     Route::post('delete-session/{id}',[SessionController::class,'RemoveSession']);
+
+    Route::post('add-visa',[ProfileController::class,'AddVisa']);
+
+});
+
+// both
+
+Route::group(['prefix'=>'mobile'],function(){
+
+    Route::get('profile',[ProfileController::class,'MyInfo']);
+    Route::post('change-name',[ProfileController::class,'ChangeName']);
+    Route::post('change-password',[ProfileController::class,'ChangePassword']);
+    Route::post('change-email',[ProfileController::class,'ChangeEmail']);
+    Route::get('faqs',[ProfileController::class,'GetFaqs']);
+    Route::post('add-faq',[ProfileController::class,'CreateFaq']);
+    Route::get('feedbacks',[ProfileController::class,'GetFeedbacks']);
+    Route::post('add-feedback',[ProfileController::class,'CreateFeedback']);
+    
 });

@@ -40,28 +40,29 @@ class LoginController extends Controller
 
             $user['token'] = "Bearer ".$user[0]->createToken($request->password)->plainTextToken;
 
-            $protocol = UserProtocol::find($user[0]->id);
+            try {
 
-            if (!$protocol){
+                $protocol = UserProtocol::where('user_id',$user[0]->id)->get()[0];
+                return $this->Data(compact('user'),"",200);
+            }
+            
+            catch (\Throwable $th) {
                 
                 if ($type_id == 1){
-
+                    
                     return $this->Data(compact('user'),"You need to select your protocol",401);
                 }
-
                 else if ($type_id == 2) {
-
-                    $check = Identification::where('user_id',$user[0]->id)->first();
                     
+                    $check = Identification::where('user_id',$user[0]->id)->first();
                     if (!$check){
-
+                        
                         return $this->Data(compact('user'),"You need to complete your data",401);
                     }
+                    return $this->Data(compact('user'),"",200);
                 }
             }
-            return $this->Data(compact('user'),"",200);
         }
-        
     }
 
     public function logout(Request $request){

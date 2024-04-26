@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('photo',120)->nullable();
             $table->unsignedBigInteger('type_id');
             $table->foreign('type_id')->references('id')->on('types')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('credit_id')->nullable();
+            $table->foreign('credit_id')->references('id')->on('credits')->onUpdate('cascade')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });

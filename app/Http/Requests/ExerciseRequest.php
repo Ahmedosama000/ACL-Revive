@@ -23,10 +23,10 @@ class ExerciseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string'],
-            'link' => ['required','string'],
-            'img' => ['required','string'],
-            'instruction' => ['required','array'],
+            'name' => ['required','string','max:128'],
+            'link' => ['required','string','max:128'],
+            'img' => ['required','string','max:128'],
+            'instructions' => ['required','array'],
             'type' => ['required',Rule::in(['Primary','Optional','Alternate'])],
             'phase' => ['required',Rule::in([0,1,2,3])],
             'protocol_id' => ['required','exists:protocols,id']
