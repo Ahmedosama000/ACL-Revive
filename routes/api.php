@@ -44,7 +44,7 @@ Route::group(['prefix'=>'mobile'],function(){
 
 // patients
 
-Route::group(['prefix'=>'mobile'],function(){
+Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
     Route::get('protocols',[ProtocolController::class,'GetProtocols']);
     Route::post('set-protocol',[ProtocolController::class,'SetUserProtocol']);
     Route::get('user-protocol',[ProtocolController::class,'GetUserProtocols']);
@@ -72,7 +72,7 @@ Route::group(['prefix'=>'mobile'],function(){
 
 // doctors 
 
-Route::group(['prefix'=>'mobile'],function(){
+Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
     Route::post('identifies',[IdentifiesController::class,'UploadIDS']);
     Route::post('create-session',[SessionController::class,'Create']);
     Route::get('my-sessions',[SessionController::class,'ShowRelatedSessions']);
