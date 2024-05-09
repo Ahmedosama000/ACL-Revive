@@ -86,7 +86,7 @@ Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
 
 // both
 
-Route::group(['prefix'=>'mobile'],function(){
+Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
 
     Route::get('profile',[ProfileController::class,'MyInfo']);
     Route::post('change-name',[ProfileController::class,'ChangeName']);
