@@ -61,6 +61,8 @@ class LoginController extends Controller
                     }
                     return $this->Data(compact('user'),"",200);
                 }
+                
+                return $this->Data(compact('user'),"",200);
             }
         }
     }

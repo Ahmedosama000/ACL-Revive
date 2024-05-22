@@ -12,6 +12,7 @@ use App\Http\Controllers\api\mobile\auth\AchievementController;
 use App\Http\Controllers\api\mobile\ExerciseController;
 use App\Http\Controllers\api\mobile\ProfileController;
 use App\Http\Controllers\api\mobile\SubscriptionController;
+use App\Http\Controllers\api\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,8 @@ use App\Http\Controllers\api\mobile\SubscriptionController;
 
 Route::group(['prefix'=>'mobile'],function(){
     Route::get('register',[RegisterController::class,'ShowType']);
-    Route::post('register',[RegisterController::class,'Register']);;
+    Route::post('register',[RegisterController::class,'Register']);
+    Route::post('otorpedist-register',[RegisterController::class,'OrthRegister']);
     Route::post('login',[LoginController::class,'Login']);
     Route::delete('logout',[LoginController::class,'Logout']);
     Route::delete('logout-all-devices',[LoginController::class,'AllLogout']);
@@ -84,7 +86,15 @@ Route::group(['prefix'=>'mobile'],function(){
 
 });
 
-// both
+// Center
+
+Route::group(['prefix'=>'radiology'],function(){
+    Route::post('send-patient',[ServiceController::class,'SendPatient']);
+
+});
+
+
+// All 
 
 Route::group(['prefix'=>'mobile'],function(){
 
@@ -98,3 +108,4 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::post('add-feedback',[ProfileController::class,'CreateFeedback']);
     
 });
+

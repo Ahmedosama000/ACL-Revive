@@ -10,7 +10,8 @@ trait media {
     {
 
         $fileName = time() . "-$id." . $image->extension();
-        $path = $image->storeAs($folder,$fileName,'local');
+        $image->move(public_path($folder),$fileName);
+
 
         return $fileName;
     }

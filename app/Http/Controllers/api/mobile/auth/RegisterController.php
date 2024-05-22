@@ -7,11 +7,13 @@ use App\Models\User;
 use App\Http\traits\media;
 use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
+use App\Models\Identification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserPhotoRequest;
+use App\Http\Requests\OrthRegisterRequest;
 
 class RegisterController extends Controller
 {
@@ -63,6 +65,39 @@ class RegisterController extends Controller
         }
 
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+
+    }
+
+    public function OrthRegister(OrthRegisterRequest $request){
+
+        $data = [
+
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'type_id' => 4
+        ];
+        
+        $user = User::create($data);
+        $user->token = "Bearer ".$user->createToken($request->email)->plainTextToken;
+
+        $nation = $request->file('nation');
+        $nation_name = $this->uploadFile($nation,'nations',$user->id);
+                
+        $union = $request->file('union');
+        $union_name = $this->uploadFile($union,'unions',$user->id);
+
+        $data = [
+
+            "user_id" => $user->id,
+            "national" => asset("nations/$nation_name"),
+            "union" => asset("unions/$union_name")
+        ];
+
+        Identification::create($data);
+
+        return $this->Data(compact('user'),"User Created Successfully",201);
 
     }
 }
