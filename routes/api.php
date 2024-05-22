@@ -88,8 +88,13 @@ Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
 
 // Center
 
-Route::group(['prefix'=>'radiology'],function(){
+Route::group(['prefix'=>'radiology','middleware'=>'auth:sanctum'],function(){
     Route::post('send-patient',[ServiceController::class,'SendPatient']);
+    Route::get('reports',[ServiceController::class,'ShowAllReports']);
+    Route::get('patients',[ServiceController::class,'ShowAllPatients']);
+    Route::get('patient/{id}',[ServiceController::class,'ShowPatient']);
+    Route::post('edit-patient/{id}',[ServiceController::class,'EditPatient']);
+    Route::get('mris',[ServiceController::class,'ShowMRI']);
 
 });
 

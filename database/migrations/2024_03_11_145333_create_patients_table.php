@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('password',128);
             $table->string('phone',14);
             $table->integer('age');
-            $table->string('result');
+            $table->string('result')->nullable();
+            $table->string('mri')->nullable();
             $table->string('dr_name',64);
             $table->string('dr_gmail',64);
             $table->string('dr_phone',64);
