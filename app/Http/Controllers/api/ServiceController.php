@@ -2,65 +2,91 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Models\User;
+use App\Models\Patient;
 use App\Http\traits\media;
 use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ServiceRequest;
-use App\Models\Patient;
-use App\Models\Report;
-use App\Models\Scan;
 
 class ServiceController extends Controller
 {
     use ApiTrait;
     use media;
 
-    public function SendPatient(ServiceRequest $request){
+    public function SavePatient(ServiceRequest $request){
 
         $token = $request->header('Authorization');
         $authenticated = Auth::guard('sanctum')->user();
 
-        $service_data = [
-            'user_id' => $authenticated->id,
-            'dr_name' => $request->doctor_name,
-            'dr_gmail' => $request->doctor_mail,
-            'dr_phone' => $request->doctor_phone,
-            'name' => $request->patient_name,
-            'email' => $request->patient_mail,
-            'phone' => $request->patient_phone,
-            'age' => $request->patient_age,
-            'result' => $request->result,
-            'mri' => $request->mri
-        ];
-
-        $data = Patient::create($service_data);
-
-        $patient_id = $data->id;
-
-        if ($request->file('report')) {
-            $report = $request->file('report');
-            $report_name = $this->uploadFile($report,'reports',$patient_id);
-            $reports = ['patient_id'=>$patient_id,'file'=>asset("reports/$report_name")];
-
-            $report_data = Report::create($reports);
-            return $this->Data(compact('data','report_data'),"Patient Send Successfully",200);
-        }
+        $doctor_id = User::where('email',$request->doctor_mail)->get()[0]->id;
         
-        return $this->Data(compact('data'),"Patient Send Successfully",200);
-    }
+        try {
+            
+            $report = $request->file('report');
+            $report_name = $this->uploadFile($report,'reports',$doctor_id);
 
+            $service_data = [
+                'user_id' => $authenticated->id,
+                'dr_id' => $doctor_id,
+                'dr_name' => $request->doctor_name,
+                'dr_gmail' => $request->doctor_mail,
+                'dr_phone' => $request->doctor_phone,
+                'name' => $request->patient_name,
+                'email' => $request->patient_mail,
+                'phone' => $request->patient_phone,
+                'age' => $request->patient_age,
+                'result' => $request->result,
+                'mri' => $request->mri,
+                'report' =>asset("reports/$report_name")
+            
+            ];
+
+            $data = Patient::create($service_data);
+            return $this->Data(compact('data'),"Patient Send Successfully",200);
+        
+        } 
+        catch (\Throwable $th) {
+            //throw $th;
+
+            $service_data = [
+                'user_id' => $authenticated->id,
+                'dr_id' => $doctor_id,
+                'dr_name' => $request->doctor_name,
+                'dr_gmail' => $request->doctor_mail,
+                'dr_phone' => $request->doctor_phone,
+                'name' => $request->patient_name,
+                'email' => $request->patient_mail,
+                'phone' => $request->patient_phone,
+                'age' => $request->patient_age,
+                'result' => $request->result,
+                'mri' => $request->mri,
+                'report' => $request->report
+            ];
+
+            $data = Patient::create($service_data);
+            return $this->Data(compact('data'), "Patient Send Successfully", 200);
+        }
+    }
+        
     public function ShowAllReports(){
 
-        $data = Report::with('patient:patients.id,name,email,phone')->get();
+        $authenticated = Auth::guard('sanctum')->user();
+
+        $data = Patient::with('user:users.id,name,email,phone')->
+        where('user_id',$authenticated->id)->whereNotNull('report')->select('id','user_id','name','email','report')->get();
         return $this->Data(compact('data'),"",200);
     }
 
     public function ShowAllPatients(){
 
-        $data = Patient::all()->select('id','name','email','phone','age','result','dr_name','dr_gmail','dr_phone')->
-        where('result',null);
+        $authenticated = Auth::guard('sanctum')->user();
+
+        $data = Patient::all()->select('id','user_id','name','email','phone','age','result','dr_name','dr_gmail','dr_phone')->
+        whereNull('result','mri','report')->where('user_id',$authenticated->id);
 
         return $this->Data(compact('data'),"",200);
 
@@ -68,13 +94,21 @@ class ServiceController extends Controller
 
     public function ShowPatient($id){
 
+        $authenticated = Auth::guard('sanctum')->user();
+
         $data = Patient::find($id);
        
         if (!$data){
             return $this->ErrorMessage(["ID"=>"ID Not Fount"],"Something Error",404); 
-    }
-        return $this->Data(compact('data'),"",200);
+        }
         
+        try {
+            $data = Patient::where('id',$id)->where('user_id',$authenticated->id)->get(['id','user_id','name','email','phone','age','result','dr_name','dr_gmail','dr_phone'])[0];
+            return $this->Data(compact('data'),"",200);
+        } 
+        catch (\Throwable $th) {
+            return $this->ErrorMessage(["ID"=>"ID Not Fount"],"Something Error",404); 
+        }
     }
 
     public function EditPatient(ServiceRequest $request,$id){
@@ -87,50 +121,63 @@ class ServiceController extends Controller
             return $this->ErrorMessage(["ID"=>"ID Not Fount"],"Something Error",404); 
         }
 
-        elseif ($patient->result != null ){
-            return $this->ErrorMessage(["Patient"=>"Patient Data already completed"],"Something Error",404); 
-        }
-        elseif (!$request->hasFile('report')){
-            return $this->ErrorMessage(["Report"=>"Upload Report"],"You Should Upload Report",404); 
-        }
-        elseif (!$request->result){
-            return $this->ErrorMessage(["result"=>"result needed"],"You Should write result",404); 
-        }
-        elseif (!$request->mri){
-            return $this->ErrorMessage(["mri"=>"mri needed"],"You Should input mri",404); 
-        }
-        
-        $patient_data = [
-            'user_id' => $authenticated->id,
-            'dr_name' => $request->doctor_name,
-            'dr_gmail' => $request->doctor_mail,
-            'dr_phone' => $request->doctor_phone,
-            'name' => $request->patient_name,
-            'email' => $request->patient_mail,
-            'phone' => $request->patient_phone,
-            'age' => $request->patient_age,
-            'result' => $request->result,
-            'mri' => $request->mri,
-        ];
+        $doctor_id = $patient->dr_id;
 
-        if ($request->hasFile('report')) {
+        try {
+            
             $report = $request->file('report');
-            $report_name = $this->uploadFile($report,'reports',$id);
-            $reports = ['patient_id'=>$id,'file'=>asset("reports/$report_name")];
+            $report_name = $this->uploadFile($report,'reports',$doctor_id);
 
-            $report_data = Report::create($reports);
-            Patient::find($id)->Update($patient_data);
+            $service_data = [
+                'user_id' => $authenticated->id,
+                'dr_id' => $doctor_id,
+                'dr_name' => $request->doctor_name,
+                'dr_gmail' => $request->doctor_mail,
+                'dr_phone' => $request->doctor_phone,
+                'name' => $request->patient_name,
+                'email' => $request->patient_mail,
+                'phone' => $request->patient_phone,
+                'age' => $request->patient_age,
+                'result' => $request->result,
+                'mri' => $request->mri,
+                'report' =>asset("reports/$report_name")
+            
+            ];
 
-            return $this->SuccessMessage("Patient Info Updated Successfully",200);
+            $data = Patient::find($id)->update($service_data);
+            return $this->SuccessMessage("Patient Updated Successfully",200);
+        
+        } 
+        catch (\Throwable $th) {
+            //throw $th;
+
+            $service_data = [
+                'user_id' => $authenticated->id,
+                'dr_id' => $doctor_id,
+                'dr_name' => $request->doctor_name,
+                'dr_gmail' => $request->doctor_mail,
+                'dr_phone' => $request->doctor_phone,
+                'name' => $request->patient_name,
+                'email' => $request->patient_mail,
+                'phone' => $request->patient_phone,
+                'age' => $request->patient_age,
+                'result' => $request->result,
+                'mri' => $request->mri,
+                'report' => $request->report
+            ];
+
+            $data = Patient::find($id)->update($service_data);
+            return $this->SuccessMessage("Patient Updated Successfully",200);
         }
-        else {
-            return $this->ErrorMessage(["Report"=>"Upload Report"],"You Should Upload Report",404); 
-        }
+
     }
 
     public function ShowMRI(){
 
-        $data = Patient::whereNotNull('mri')->get();
+        $authenticated = Auth::guard('sanctum')->user();
+
+
+        $data = Patient::whereNotNull('mri')->where('user_id',$authenticated->id)->get(['name','email','phone','mri']);
         return $this->Data(compact('data'),"",200);
     }
 }

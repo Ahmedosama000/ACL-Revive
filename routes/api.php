@@ -89,7 +89,7 @@ Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
 // Center
 
 Route::group(['prefix'=>'radiology','middleware'=>'auth:sanctum'],function(){
-    Route::post('send-patient',[ServiceController::class,'SendPatient']);
+    Route::post('save-patient',[ServiceController::class,'SavePatient']);
     Route::get('reports',[ServiceController::class,'ShowAllReports']);
     Route::get('patients',[ServiceController::class,'ShowAllPatients']);
     Route::get('patient/{id}',[ServiceController::class,'ShowPatient']);
@@ -107,6 +107,8 @@ Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
     Route::post('change-name',[ProfileController::class,'ChangeName']);
     Route::post('change-password',[ProfileController::class,'ChangePassword']);
     Route::post('change-email',[ProfileController::class,'ChangeEmail']);
+    Route::post('change-username',[ProfileController::class,'ChangeUserName']);
+    Route::post('change-phone',[ProfileController::class,'ChangePhone']);
     Route::get('faqs',[ProfileController::class,'GetFaqs']);
     Route::post('add-faq',[ProfileController::class,'CreateFaq']);
     Route::get('feedbacks',[ProfileController::class,'GetFeedbacks']);

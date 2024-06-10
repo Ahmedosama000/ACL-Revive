@@ -25,6 +25,7 @@ class OrthRegisterRequest extends FormRequest
             'name' => ['required'],
             'email' => ['required','email','unique:users,email'],
             'phone' => ['required','numeric'],
+            'username' => ['required','string','unique:users,username'],
             'password' => ['required','min:8'],
             'nation' => ['required','max:5000','mimes:png,jpg,pdf'],
             'union' => ['required','max:5000','mimes:png,jpg,pdf'],

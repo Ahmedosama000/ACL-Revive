@@ -20,10 +20,13 @@ return new class extends Migration
             $table->integer('age');
             $table->string('result')->nullable();
             $table->string('mri')->nullable();
+            $table->string('report',128)->nullable();
             $table->string('dr_name',64);
             $table->string('dr_gmail',64);
             $table->string('dr_phone',64);
             $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('doctor_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

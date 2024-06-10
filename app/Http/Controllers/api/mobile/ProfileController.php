@@ -35,7 +35,46 @@ class ProfileController extends Controller
             return $this->SuccessMessage("Name Changed Successfully",200);
         }
         return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+    }
 
+    public function ChangeUserName(Request $request){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            $request->validate([
+                'username' => ['required','string','max:32','unique:users,username,'.$authenticated->id],
+            ]);
+
+            $user = User::find($authenticated->id)->first();
+            $user->username = $request->username;
+            $user->save();
+
+            return $this->SuccessMessage("Username Changed Successfully",200);
+        }
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
+    }
+
+    public function ChangePhone(Request $request){
+
+        $request->validate([
+            'phone' => ['required','numeric'],
+        ]);
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated){
+
+            $user = User::find($authenticated->id)->first();
+            $user->phone = $request->phone;
+            $user->save();
+
+            return $this->SuccessMessage("Phone Changed Successfully",200);
+        }
+        return $this->ErrorMessage(['token'=>'token invalid'],"Please check token",404);
     }
 
     public function ChangePassword(Request $request){

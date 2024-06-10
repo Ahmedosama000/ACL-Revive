@@ -11,6 +11,7 @@ class Patient extends Model
 
     protected $fillable = [
         'user_id',
+        'dr_id',
         'result',
         'age',
         'phone',
@@ -19,7 +20,8 @@ class Patient extends Model
         'dr_phone',
         'dr_gmail',
         'dr_name',
-        'mri'
+        'mri',
+        'report'
     ];
 
     protected $casts = [

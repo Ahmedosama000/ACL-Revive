@@ -22,16 +22,16 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'doctor_name' =>  ['required','string','max:64'],
-            'doctor_mail' =>  ['required','email'],
-            'doctor_phone'=>  ['required','numeric'],
-            'patient_name' => ['required','string','max:64'],
-            'patient_mail' => ['required','email'],
-            'patient_phone'=> ['required','numeric'],
-            'patient_age'  => ['required','integer'],
-            'result'       => ['string'],
-            'mri'          => ['string'],
-            'report'       => ['max:8000','mimes:pdf'],
+            'doctor_name'  =>  ['string','max:64'],
+            'doctor_mail'  =>  ['email','exists:users,email'],
+            'doctor_phone' =>  ['numeric'],
+            'patient_name' =>  ['required','string','max:64'],
+            'patient_mail' =>  ['email'],
+            'patient_phone'=>  ['required','numeric'],
+            'patient_age'  =>  ['required','integer'],
+            'result'       =>  ['string'],
+            'mri'          =>  ['string'],
+            'report'       =>  ['max:8000','mimes:pdf'],
         ];
     }
 }
