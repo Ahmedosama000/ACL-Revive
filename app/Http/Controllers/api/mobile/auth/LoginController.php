@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         else if ($request->username){
             $user = User::with('type:types.id,name')->where('username',$request->username)->get();
-            $type_id = User::where('email',$request->email)->first()->type_id;
+            $type_id = User::where('username',$request->username)->first()->type_id;
         }
 
         

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\traits\ApiTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SendRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ServiceRequest;
 
@@ -180,4 +181,85 @@ class ServiceController extends Controller
         $data = Patient::whereNotNull('mri')->where('user_id',$authenticated->id)->get(['name','email','phone','mri']);
         return $this->Data(compact('data'),"",200);
     }
+
+    public function GetAllDoctors(Request $request){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        if ($authenticated->type_id == 3) {
+
+            $doctors = User::query()->where('type_id', 4)
+            ->get(['id','name','username','email','photo']);
+
+            return $this->Data(compact('doctors'), "", 200);
+        }
+
+        return $this->ErrorMessage(["authorized"=>"not authorized"],"pls try again",401);
+    }
+
+    public function Send(SendRequest $request , $id){
+
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+
+        $check_id = Patient::find($id);
+
+        if ($check_id) {
+
+            if ($request->doctor_mail) {
+
+                $doctor_id = User::query()->where('email', $request->doctor_mail)->get()[0]->id;
+
+                $report = $request->file('report');
+                $report_name = $this->uploadFile($report, 'reports', $doctor_id);
+
+                $service_data = [
+                    'user_id' => $authenticated->id,
+                    'dr_id' => $doctor_id,
+                    'dr_name' => $request->doctor_name,
+                    'dr_gmail' => $request->doctor_mail,
+                    'dr_phone' => $request->doctor_phone,
+                    'name' => $request->patient_name,
+                    'email' => $request->patient_mail,
+                    'phone' => $request->patient_phone,
+                    'age' => $request->patient_age,
+                    'result' => $request->result,
+                    'mri' => $request->mri ? $request : null,
+                    'report' => asset("reports/$report_name")
+                ];
+
+                Patient::find($id)->update($service_data);
+                return $this->SuccessMessage("Data Send Successfully", 200);
+            } 
+
+            elseif ($request->patient_mail){
+
+                $report = $request->file('report');
+                $report_name = $this->uploadFile($report, 'reports', uniqid());
+
+                $service_data = [
+                    'user_id' => $authenticated->id,
+                    'dr_id' => null,
+                    'dr_name' => $request->doctor_name,
+                    'dr_gmail' => $request->doctor_mail,
+                    'dr_phone' => $request->doctor_phone,
+                    'name' => $request->patient_name,
+                    'email' => $request->patient_mail,
+                    'phone' => $request->patient_phone,
+                    'age' => $request->patient_age,
+                    'result' => $request->result,
+                    'mri' => $request->mri ? $request : null,
+                    'report' => asset("reports/$report_name")
+                ];
+
+                Patient::find($id)->update($service_data);
+
+                $patient_data = Patient::query()->where('id',$id)->get(['id','name','email','phone','age','report','result','mri']);
+                return $this->Data(compact('patient_data'),"Data Send Successfully", 200);
+            }        
+        }
+        return $this->ErrorMessage(["ID"=>"ID not found"],"ID not found",401);
+    }
+
 }

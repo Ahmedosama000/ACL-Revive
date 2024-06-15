@@ -86,7 +86,7 @@ Route::group(['prefix'=>'mobile','middleware'=>'auth:sanctum'],function(){
 
 });
 
-// Center
+// Center &
 
 Route::group(['prefix'=>'radiology','middleware'=>'auth:sanctum'],function(){
     Route::post('save-patient',[ServiceController::class,'SavePatient']);
@@ -95,6 +95,8 @@ Route::group(['prefix'=>'radiology','middleware'=>'auth:sanctum'],function(){
     Route::get('patient/{id}',[ServiceController::class,'ShowPatient']);
     Route::post('edit-patient/{id}',[ServiceController::class,'EditPatient']);
     Route::get('mris',[ServiceController::class,'ShowMRI']);
+    Route::get('get-all-doctors',[ServiceController::class,'GetAllDoctors']);
+    Route::post('send/{id}',[ServiceController::class,'Send']);
 
 });
 
