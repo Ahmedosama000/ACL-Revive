@@ -57,7 +57,7 @@ class LoginController extends Controller
                     $check = Identification::where('user_id',$user[0]->id)->first();
                     if (!$check){
                         
-                        return $this->Data(compact('user'),"You need to complete your data",401);
+                        return $this->Data(compact('user'),"You need to complete your data",200);
                     }
                     return $this->Data(compact('user'),"",200);
                 }
