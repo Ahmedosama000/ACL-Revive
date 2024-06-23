@@ -101,4 +101,23 @@ class RegisterController extends Controller
         return $this->Data(compact('user'),"User Created Successfully",201);
 
     }
+
+    public function SendCode(Request $request){
+
+        // 1- Get token 
+        $token = $request->header('Authorization');
+        $authenticated = Auth::guard('sanctum')->user();
+        // 2- Gen code 
+        $code = rand(1000,9999);
+        // 3- Gen expiration date 
+        $expiration = date('Y-m-d H:i:s',strtotime('+10 minutes'));
+        // 4- Save code and date in db
+        $user = User::find($authenticated->id);
+        $user->code = $code ;
+        $user->code_expired_at = $expiration;
+        $user->save();
+        $user->token = $token;
+
+        return $this->Data(compact('user'),"",200);
+    }
 }

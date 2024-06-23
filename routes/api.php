@@ -40,6 +40,7 @@ Route::group(['prefix'=>'mobile'],function(){
     Route::delete('logout-all-devices',[LoginController::class,'AllLogout']);
     Route::get('check/{email}',[ResetController::class,'CheckMail']);
     Route::post('send-code',[ResetController::class,'SendCode']);
+    Route::post('send-code-verify',[RegisterController::class,'SendCode']);
     Route::post('check-code',[ResetController::class,'CheckCode']);
     Route::post('reset-password',[ResetController::class,'ResetPassword']);
 });
