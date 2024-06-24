@@ -94,7 +94,7 @@ class ProfileController extends Controller
             }
 
             $user = User::find($authenticated->id)->first();
-            $user->password = $request->new_password;
+            $user->password = Hash::make($request->new_password);
             $user->save();
 
             $authenticated->tokens()->delete();
